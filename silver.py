@@ -33,6 +33,7 @@ parser.add_argument('-r', '--rate', help='masscan packets per second rate', dest
 parser.add_argument('-t', '--threads', help='nmap threads to run in parallel', dest='threads', type=int)
 parser.add_argument('-q', '--quick', help='only scan top ~1000 ports', dest='quick', action='store_true')
 parser.add_argument('--resolve', help='txt file contains hostnames too', dest='resolve', action='store_true')
+parser.add_argument('--shodan', help='Shodan api key', dest='shodan', type=str)
 args = parser.parse_args()
 
 host = ','.join(resolver(args.host.split(','))) if args.host else args.host
@@ -40,6 +41,7 @@ quick = args.quick
 method = args.method
 threads = args.threads
 input_file = args.input_file
+shodan_key = args.shodan
 
 target_name = ''
 
@@ -52,6 +54,10 @@ else:
 
 savefile = cwd + '/result-' + target_name + '.txt'
 nmapfile = cwd + '/nmap-' + target_name + '.xml'
+
+if args.shodan and shodan_key:
+	print('%s Shodan api key added' % run)
+	core.memory.config['shodan_api_key'] = shodan_key
 
 if args.resolve and input_file:
 	print('%s Resolving hostnames to IPs for masscan' % run)
